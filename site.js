@@ -54,8 +54,12 @@
         var root = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
         return rem * root;
       }
+      function popScale(){
+        return parseFloat(getComputedStyle(orbit).getPropertyValue('--shot-pop')) || 1.55;
+      }
       var radius = radiusPx();
-      window.addEventListener('resize', function(){ radius = radiusPx(); });
+      var maxScale = popScale();
+      window.addEventListener('resize', function(){ radius = radiusPx(); maxScale = popScale(); });
       orbit.addEventListener('mouseenter', function(){ paused = true; });
       orbit.addEventListener('mouseleave', function(){ paused = false; });
       orbit.addEventListener('focusin', function(){ paused = true; });
@@ -69,8 +73,9 @@
           var world = (i * 360 / count + angle) * Math.PI / 180;
           var facing = Math.cos(world);
           var pop = Math.pow(Math.max(0, facing), 1.55);
+          var scale = (1 + pop * (maxScale - 1)) / maxScale;
           shots[i].style.transform =
-            'rotateY(' + (i * 360 / count) + 'deg) translateZ(' + radius + 'px) scale(' + (1 + pop * 0.55) + ') translateZ(' + (pop * 56) + 'px)';
+            'rotateY(' + (i * 360 / count) + 'deg) translateZ(' + radius + 'px) scale(' + scale.toFixed(4) + ') translateZ(' + (pop * 56 * maxScale).toFixed(2) + 'px)';
           shots[i].style.zIndex = String(Math.round(30 + facing * 30));
           shots[i].style.filter = 'brightness(' + (0.42 + pop * 0.7).toFixed(2) + ')';
           shots[i].style.opacity = String(0.4 + pop * 0.6);

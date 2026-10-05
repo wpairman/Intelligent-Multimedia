@@ -246,6 +246,7 @@
     --shot-w: 8.2rem;
     --shot-h: 10.4rem;
     --ring-r: 12.5rem;
+    --shot-pop: 1.55;
     position:relative;
     z-index:2;
     height:clamp(18rem, 52vw, 28rem);
@@ -277,23 +278,24 @@
     }
     .hero-inner{ min-height:42rem; }
   }
+  /* Shots are laid out at their largest (front) size and scaled down in JS,
+     so the browser never upscales a low-res raster of the photo. */
   .hero-ring{
     position:relative;
-    width:var(--shot-w);
-    height:var(--shot-h);
+    width:calc(var(--shot-w) * var(--shot-pop));
+    height:calc(var(--shot-h) * var(--shot-pop));
     transform-style:preserve-3d;
   }
   .hero-shot{
     position:absolute;
     inset:0;
-    border-radius:12px;
+    border-radius:18px;
     overflow:hidden;
     border:1px solid var(--screen-border);
     background:var(--screen-panel);
-    box-shadow:0 18px 40px rgba(0,0,0,0.45);
+    box-shadow:0 28px 62px rgba(0,0,0,0.45);
     transform-style:preserve-3d;
     backface-visibility:hidden;
-    will-change:transform, filter, opacity;
   }
   .hero-shot img{
     width:100%;
@@ -303,8 +305,13 @@
     transform:translateZ(0.1px);
     image-rendering:auto;
   }
+  .hero-orbit.is-static .hero-ring{
+    width:var(--shot-w);
+    height:var(--shot-h);
+  }
   .hero-orbit.is-static .hero-shot{
     box-shadow:none;
+    border-radius:12px;
   }
   .hero-orbit.is-static .hero-shot:not(:first-child){ display:none; }
   .hero-orbit.is-static .hero-shot:first-child{
